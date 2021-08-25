@@ -9,7 +9,7 @@ export function convertToOpenAPISchema(parsedSchema: ParsedSchema) {
     ...createRequiredPropertiesStrings(parsedSchema, 1),
     `${ident(1)}properties:`,
     ...createPropertiesStrings(parsedSchema, 2),
-  ].join("\n");
+  ].join("\n") + '\n';
 
   return stringRepresentation;
 }

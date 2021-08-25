@@ -2,52 +2,60 @@ import fs from "fs";
 import path from "path";
 import { cwd } from "process";
 import { convertToOpenAPISchema } from "./support/openapi-conversion";
-import { writeSchemaToFiles } from "./support/output-writer";
+import { writeSchemasToFiles } from "./support/output-writer";
 import { convertToSchema } from "./support/schema-conversion";
 
 const config = {
   outDir: "./parsed",
   inputDir: "./parse",
+  writeSingleFile: false,
 };
 
-console.log("Starting Schema Parsing");
+main();
 
-const parseDir = fs.readdirSync(path.join(cwd(), config.inputDir));
+function main() {
+  console.log("Starting Schema Parsing");
+  const parseDir = fs.readdirSync(path.join(cwd(), config.inputDir));
+  console.log("Found files:", parseDir);
 
-console.log("Found files:", parseDir);
+  /**
+   * Maps the filename to their converted YAML representation
+   */
+  const convertedYamlStringsMap = new Map<string, string>();
 
-for (const fileToParse of parseDir) {
-  const fileContent = fs.readFileSync(
-    path.join(cwd(), config.inputDir, fileToParse)
-  );
+  for (const fileToParse of parseDir) {
+    const fileContent = fs.readFileSync(
+      path.join(cwd(), config.inputDir, fileToParse)
+    );
 
-  const stringContent = fileContent.toString();
-  const words = stringContent.split(" ").map((word) => word.trim());
-  const relevantWordsSanitized = [];
+    const stringContent = fileContent.toString();
+    const words = stringContent.split(" ").map((word) => word.trim());
+    const relevantWordsSanitized = [];
 
-  let isImportsRemoved = false;
+    let isImportsRemoved = false;
 
-  for (const word of words) {
-    if (word.includes("class") || word.includes("interface")) {
-      isImportsRemoved = true;
+    for (const word of words) {
+      if (word.includes("class") || word.includes("interface")) {
+        isImportsRemoved = true;
+      }
+
+      const sanitizedWord = sanitizeWord(word);
+
+      if (isImportsRemoved && isWordRelevant(sanitizedWord)) {
+        relevantWordsSanitized.push(sanitizedWord);
+      }
     }
 
-    const sanitizedWord = sanitizeWord(word);
+    console.log("Parsing and converting to schema");
+    const schema = convertToSchema(relevantWordsSanitized);
 
-    if (isImportsRemoved && isWordRelevant(sanitizedWord)) {
-      relevantWordsSanitized.push(sanitizedWord);
-    }
+    console.log("Converting parsed schema to OpenAPI Spec");
+    convertedYamlStringsMap.set(fileToParse, convertToOpenAPISchema(schema));
   }
 
-  console.log("Parsing and converting to schema");
-  const schema = convertToSchema(relevantWordsSanitized);
 
-  console.log("Converting parsed schema to OpenAPI Spec");
-  const schemaString = convertToOpenAPISchema(schema);
-
-  console.log("Writing OpenAPI Spec");
   const outputDirPath = path.join(cwd(), config.outDir);
-  writeSchemaToFiles(fileToParse, schemaString, outputDirPath);
+  writeSchemasToFiles(convertedYamlStringsMap, outputDirPath);
 }
 
 function isWordRelevant(word: string): boolean {

@@ -1,19 +1,20 @@
 import fs from "fs";
 import path from "path";
 
-export function writeSchemaToFiles(
-  inputFileName: string,
-  schemaString: string,
+export function writeSchemasToFiles(
+  fileToYamlMap: Map<string, string>,
   pathToOutputDir: string
 ) {
   mkdirIfNotExists(pathToOutputDir);
 
-  const outputFileName = inputFileName.replace(".ts", ".yaml");
+  fileToYamlMap.forEach((schemaString, inputFileName) => {
+    const outputFileName = inputFileName.replace(".ts", ".yaml");
 
-  const completeOutputPath = path.join(pathToOutputDir, outputFileName);
+    const completeOutputPath = path.join(pathToOutputDir, outputFileName);
 
-  console.log(`Writing ${completeOutputPath}`);
-  fs.writeFileSync(completeOutputPath, schemaString);
+    console.log(`Writing ${completeOutputPath}`);
+    fs.writeFileSync(completeOutputPath, schemaString);
+  });
 }
 
 function mkdirIfNotExists(outputDirPath: string) {
