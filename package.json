@@ -4,6 +4,7 @@
   "description": "Simple OpenAPI schema parser for TypeScript interfaces",
   "main": "/dist/index.js",
   "scripts": {
+    "build": "tsc",
     "start": "tsc && node ./dist/index.js",
     "start:s": "tsc && node ./dist/index.js -- --wsf=true",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -27,6 +27,7 @@ const defaultConfig: Config = {
   writeSingleFile: false,
 };
 
+// parse command line parameters to overwrite defaults
 for (let i = 2; i < process.argv.length; i++) {
   const argument = process.argv[i];
   console.log(`Received argument ${argument}`);
@@ -37,6 +38,8 @@ for (let i = 2; i < process.argv.length; i++) {
     defaultConfig.inputDir = argument.replace("--input=", "");
   } else if (argument.includes("--output")) {
     defaultConfig.outDir = argument.replace("--output=", "");
+  } else {
+    console.log("Found unknown argument. Skipping: ", argument);
   }
 }
 
