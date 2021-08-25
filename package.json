@@ -1,10 +1,13 @@
 {
   "name": "typescript-openapi-spec-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenAPI Spec generator parsing TypeScript files",
   "main": "/dist/index.js",
   "scripts": {
     "build": "tsc",
+    "bump:major": "node ./scripts/bump-version-number.js major",
+    "bump:minor": "node ./scripts/bump-version-number.js minor",
+    "bump:patch": "node ./scripts/bump-version-number.js patch",
     "start": "tsc && node ./dist/index.js",
     "start:s": "tsc && node ./dist/index.js -- --wsf=true",
     "test": "echo \"Error: no test specified\" && exit 1"
