@@ -5,6 +5,9 @@
   "main": "/dist/index.js",
   "scripts": {
     "build": "tsc",
+    "bump:major": "node ./scripts/bump-version-number.js major",
+    "bump:minor": "node ./scripts/bump-version-number.js minor",
+    "bump:patch": "node ./scripts/bump-version-number.js patch",
     "start": "tsc && node ./dist/index.js",
     "start:s": "tsc && node ./dist/index.js -- --wsf=true",
     "test": "echo \"Error: no test specified\" && exit 1"
