@@ -92,7 +92,7 @@ function runInstall() {
   logStandard('Running "npm install" command to update package-lock.json');
 
   exec('npm i', (err, stdout, stderr) => {
-    if(err) {
+    if (err) {
       logError('An error occurred. Output:');
       logError(stdout);
       logError(stderr);
@@ -101,7 +101,7 @@ function runInstall() {
       logStandard(stdout);
       logStandard(stderr);
 
-      logSuccess("Done! Successfully bumped version."); 
+      logSuccess("Done! Successfully bumped version.");
     }
   });
 }
