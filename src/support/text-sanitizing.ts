@@ -1,34 +1,47 @@
 export function removeIrrelevantTextAndSplit(
   fileTextContent: string
 ): string[] {
+  let remainingText = removeAllComments(fileTextContent);
+
+  remainingText = remainingText.substring(
+    findIndexOfClassOrInterface(remainingText)
+  );
+
+  remainingText = removeEverythingAfterEndOfFirstBody(remainingText);
+
+  return getRelevantWords(remainingText);
+}
+
+function removeAllComments(text: string): string {
   const blockCommentRegExp = new RegExp(
-    /\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/
-  );
-  const lineCommentRegExp = new RegExp("(//.*)");
-  const removedCommentsText = fileTextContent
-    .replace(blockCommentRegExp, "")
-    .replace(lineCommentRegExp, "");
-
-  let relevantTextStartIndex = findIndexOfClassOrInterface(removedCommentsText);
-  const relevantTextContent = removedCommentsText.substring(
-    relevantTextStartIndex
+    /\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/,
+    "g"
   );
 
-  return getRelevantWords(relevantTextContent);
+  const lineCommentRegExp = new RegExp(/(\/\/[^\n]*)/, "g");
+
+  return text.replace(blockCommentRegExp, "").replace(lineCommentRegExp, "");
+}
+
+function removeEverythingAfterEndOfFirstBody(text: string): string {
+  const bodyEndIndex = text.indexOf("}");
+
+  if (bodyEndIndex < 0) {
+    console.log(text);
+    throw new Error("Invalid body!");
+  }
+
+  return text.slice(0, bodyEndIndex);
 }
 
 function getRelevantWords(textContent: string): string[] {
-  const words = textContent.split(" ").map((word) => word.trim());
+  const relevantWordsSanitized = [getModelName(textContent)];
 
-  const relevantWordsSanitized = [];
+  const words = removeEverythingBeforeStartOfFirstBody(textContent)
+    .split(" ")
+    .map((word) => word.trim());
 
-  const indexSchemaName = findIndexOfClassOrInterface(words) + 1;
-  relevantWordsSanitized.push(sanitizeWord(words[indexSchemaName]));
-
-  // skip everything until opening brackets
-  const schemaBodyWords = words.slice(words.indexOf("{"));
-
-  for (const word of schemaBodyWords) {
+  for (const word of words) {
     const sanitizedWord = sanitizeWord(word);
 
     if (isWordRelevant(sanitizedWord)) {
@@ -37,6 +50,25 @@ function getRelevantWords(textContent: string): string[] {
   }
 
   return relevantWordsSanitized;
+}
+
+function removeEverythingBeforeStartOfFirstBody(text: string): string {
+  const bodyStartIndex = text.indexOf("{");
+
+  if (bodyStartIndex < 0) {
+    console.log(text);
+    throw new Error("Invalid body!");
+  }
+
+  return text.slice(bodyStartIndex);
+}
+
+function getModelName(text: string) {
+  const words = text.split(" ").map((word) => word.trim());
+
+  const indexSchemaName = findIndexOfClassOrInterface(words) + 1;
+
+  return sanitizeWord(words[indexSchemaName]);
 }
 
 function findIndexOfClassOrInterface(words: string | string[]): number {
