@@ -4,6 +4,7 @@ import { cwd } from "process";
 import { convertToOpenAPISchema } from "./support/openapi-conversion";
 import { writeSchemas } from "./support/output-writer";
 import { convertToSchema } from "./support/schema-conversion";
+import { removeIrrelevantTextAndSplit } from "./support/text-sanitizing";
 
 interface Config {
   /**
@@ -58,25 +59,12 @@ function main(config: Config) {
       path.join(cwd(), config.inputDir, fileToParse)
     );
 
-    const stringContent = fileContent.toString();
-    const words = stringContent.split(" ").map((word) => word.trim());
-    const relevantWordsSanitized = [];
+    let fileTextContent = fileContent.toString();
 
-    let isImportsRemoved = false;
+    const relevantWordsSanitized =
+      removeIrrelevantTextAndSplit(fileTextContent);
 
-    for (const word of words) {
-      if (word.includes("class") || word.includes("interface")) {
-        isImportsRemoved = true;
-      }
-
-      const sanitizedWord = sanitizeWord(word);
-
-      if (isImportsRemoved && isWordRelevant(sanitizedWord)) {
-        relevantWordsSanitized.push(sanitizedWord);
-      }
-    }
-
-    console.log("Parsing and converting to schema");
+    console.log(`Parsing and converting to schema - ${fileToParse}`);
     const schema = convertToSchema(relevantWordsSanitized);
 
     console.log("Converting parsed schema to OpenAPI Spec");
@@ -85,18 +73,4 @@ function main(config: Config) {
 
   const outputDirPath = path.join(cwd(), config.outDir);
   writeSchemas(convertedYamlStringsMap, outputDirPath, config.writeSingleFile);
-}
-
-function isWordRelevant(word: string): boolean {
-  return (
-    word.length !== 0 && !word.includes("class") && !word.includes("interface")
-  );
-}
-
-function sanitizeWord(word: string): string {
-  return word
-    .replace("\r", "")
-    .replace("\n", "")
-    .replace("{", "")
-    .replace("}", "");
 }
