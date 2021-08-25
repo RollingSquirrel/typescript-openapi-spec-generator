@@ -1,6 +1,6 @@
 # TypeScript OpenAPI Spec Generator
 
-This simple NodeJS application can be used to convert TypeScript Request- and Response-models to their corresponding OpenAPI specification (v3) schema. [Further Reading](https://swagger.io/docs/specification/about/)
+This simple NodeJS application can be used to convert TypeScript models to their corresponding OpenAPI specification (v3). [Further Reading](https://swagger.io/docs/specification/about/)
 
 This is a very simple implementation based on my personal requirements:
 
