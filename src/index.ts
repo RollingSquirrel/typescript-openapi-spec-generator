@@ -5,15 +5,45 @@ import { convertToOpenAPISchema } from "./support/openapi-conversion";
 import { writeSchemas } from "./support/output-writer";
 import { convertToSchema } from "./support/schema-conversion";
 
-const config = {
+interface Config {
+  /**
+   * The output directory relative to the current working directory
+   */
+  outDir: string;
+  /**
+   * The input directory relative to the current working directory
+   */
+  inputDir: string;
+  /**
+   * If true all parsed files will be bundled within a single output file
+   */
+  writeSingleFile: boolean;
+}
+
+const defaultConfig: Config = {
   outDir: "./parsed",
   inputDir: "./parse",
-  writeSingleFile: true,
+  writeSingleFile: false,
 };
 
-main();
+for (let i = 2; i < process.argv.length; i++) {
+  const argument = process.argv[i];
+  console.log(`Received argument ${argument}`);
 
-function main() {
+  if (argument.includes("--wsf")) {
+    defaultConfig.writeSingleFile = argument.replace("--wsf=", "") === "true";
+  } else if (argument.includes("--input")) {
+    defaultConfig.inputDir = argument.replace("--input=", "");
+  } else if (argument.includes("--output")) {
+    defaultConfig.outDir = argument.replace("--output=", "");
+  }
+}
+
+main(defaultConfig);
+
+function main(config: Config) {
+  console.log("Started with config:", config);
+
   console.log("Starting Schema Parsing");
   const parseDir = fs.readdirSync(path.join(cwd(), config.inputDir));
   console.log("Found files:", parseDir);
