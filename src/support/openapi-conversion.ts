@@ -1,4 +1,5 @@
-import { ParsedSchema, ValueType } from "./parsed-schema";
+import { ParsedSchema } from "../model/parsed-schema";
+import { ValueType } from "../model/value-type";
 
 const IDENT = "  ";
 

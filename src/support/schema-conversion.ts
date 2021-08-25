@@ -1,4 +1,6 @@
-import { ParsedSchema, ParsedSchemaValue, ValueType } from "./parsed-schema";
+import { ParsedSchema } from "../model/parsed-schema";
+import { ParsedSchemaValue } from "../model/parsed-schema-value";
+import { ValueType } from "../model/value-type";
 
 export function convertToSchema(relevantWordsInput: string[]): ParsedSchema {
   const schema: ParsedSchema = {
