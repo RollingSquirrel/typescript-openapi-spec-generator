@@ -1,7 +1,7 @@
 {
-  "name": "openapi-schema-parser",
+  "name": "typescript-openapi-spec-generator",
   "version": "1.0.0",
-  "description": "Simple OpenAPI schema parser for TypeScript interfaces",
+  "description": "OpenAPI Spec generator parsing TypeScript files",
   "main": "/dist/index.js",
   "scripts": {
     "build": "tsc",
