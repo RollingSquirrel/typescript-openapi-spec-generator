@@ -2,13 +2,13 @@ import fs from "fs";
 import path from "path";
 import { cwd } from "process";
 import { convertToOpenAPISchema } from "./support/openapi-conversion";
-import { writeSchemasToFiles } from "./support/output-writer";
+import { writeSchemas } from "./support/output-writer";
 import { convertToSchema } from "./support/schema-conversion";
 
 const config = {
   outDir: "./parsed",
   inputDir: "./parse",
-  writeSingleFile: false,
+  writeSingleFile: true,
 };
 
 main();
@@ -53,9 +53,8 @@ function main() {
     convertedYamlStringsMap.set(fileToParse, convertToOpenAPISchema(schema));
   }
 
-
   const outputDirPath = path.join(cwd(), config.outDir);
-  writeSchemasToFiles(convertedYamlStringsMap, outputDirPath);
+  writeSchemas(convertedYamlStringsMap, outputDirPath, config.writeSingleFile);
 }
 
 function isWordRelevant(word: string): boolean {
