@@ -1,6 +1,6 @@
 import { WorkflowDescriptionResponse } from "./workflow-description-response";
 
-export interface WorkflowResponse extends AnotherInterface {
+export interface WorkflowResponse {
   /**
    * Some comment will be ignored.
    */
