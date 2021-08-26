@@ -39,7 +39,9 @@ export class App {
       for (let i = 0; i < parsedSchemas.length; i++) {
         const schema = parsedSchemas[i];
 
-        console.log("Converting parsed schema to OpenAPI Spec");
+        console.log(
+          `Converting parsed schema to OpenAPI Spec - ${schema.name}`
+        );
         convertedYamlStringsMap.set(
           `${fileToParse.replace(".ts", "")}-${i}`,
           convertToOpenAPISchema(schema)
@@ -71,7 +73,12 @@ export class App {
 
     const parsedUpdatedDocument =
       yamlManager.updateDefinitions(allParsedSchemas);
+    const outputDirPath = path.join(cwd(), this.config.outDir);
 
-    writeYamlFile(parsedUpdatedDocument, this.config.outDir);
+    writeYamlFile(
+      parsedUpdatedDocument,
+      outputDirPath,
+      this.config.existingOpenApiSpecPath
+    );
   }
 }

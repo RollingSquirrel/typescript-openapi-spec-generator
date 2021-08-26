@@ -2,3 +2,5 @@ node_modules/
 dist/
 parse/
 parsed/
+
+*api-spec.yaml

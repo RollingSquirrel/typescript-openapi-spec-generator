@@ -4,14 +4,16 @@ import * as yaml from "yaml";
 
 export function writeYamlFile(
   updatedYamlDocument: yaml.Document.Parsed,
-  pathToOutputDir: string
+  pathToOutputDir: string,
+  inputFilePath: string
 ) {
   mkdirIfNotExists(pathToOutputDir);
 
-  fs.writeFileSync(
-    path.join(pathToOutputDir, "output.yaml"),
-    yaml.stringify(updatedYamlDocument)
-  );
+  const outputFileName = path.basename(inputFilePath);
+  const completeOutputPath = path.join(pathToOutputDir, outputFileName);
+
+  console.log(`Writing ${completeOutputPath}`);
+  fs.writeFileSync(completeOutputPath, yaml.stringify(updatedYamlDocument));
 }
 
 export function writeSchemas(
