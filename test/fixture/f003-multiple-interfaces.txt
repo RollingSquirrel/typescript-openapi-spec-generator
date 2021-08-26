@@ -1,0 +1,20 @@
+import { WorkflowDescriptionResponse } from "./workflow-description-response";
+
+export interface WorkflowResponse extends AnotherInterface {
+  /**
+   * Some comment will be ignored.
+   */
+  id: number;
+ 
+  descriptions: WorkflowDescriptionResponse[];
+};
+
+/**
+  * Some comment
+  */
+export interface SecondInterface {
+  // This could cause problems if resolved differently
+  refOtherInterface: WorkflowResponse
+
+  otherDescriptions: WorkflowDescriptionResponse[];
+};

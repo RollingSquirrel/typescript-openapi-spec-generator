@@ -47,11 +47,13 @@ describe("AST Parser tests", () => {
     expect(descriptionsProperty).toBeDefined();
     expect(descriptionsProperty.isArray).toBe(true);
     expect(descriptionsProperty.isRequired).toBe(true);
-    expect(descriptionsProperty.stringRepresentation).toBe("WorkflowDescriptionResponse");
+    expect(descriptionsProperty.stringRepresentation).toBe(
+      "WorkflowDescriptionResponse"
+    );
     expect(descriptionsProperty.type).toBe(ValueType.OBJECT);
   });
 
-  it('should parse class', () => {
+  it("should parse class", () => {
     const result = parserInstance.processFile(
       path.join(__dirname, "fixture", "f002-single-class.txt")
     );
@@ -88,7 +90,75 @@ describe("AST Parser tests", () => {
     expect(descriptionsProperty).toBeDefined();
     expect(descriptionsProperty.isArray).toBe(true);
     expect(descriptionsProperty.isRequired).toBe(true);
-    expect(descriptionsProperty.stringRepresentation).toBe("WorkflowDescriptionResponse");
+    expect(descriptionsProperty.stringRepresentation).toBe(
+      "WorkflowDescriptionResponse"
+    );
     expect(descriptionsProperty.type).toBe(ValueType.OBJECT);
+  });
+
+  it("should parse first interface of multiple interfaces", () => {
+    const result = parserInstance.processFile(
+      path.join(__dirname, "fixture", "f003-multiple-interfaces.txt")
+    );
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(2);
+    expect(result[0].name).toBe("WorkflowResponse");
+    expect(result[1].name).toBe("SecondInterface");
+
+    // first interface
+    const wfResponseKeyValueMap = result[0].keyValueMap;
+    expect(wfResponseKeyValueMap.size).toBe(2);
+
+    const idProperty = wfResponseKeyValueMap.get("id");
+    expect(idProperty).toBeDefined();
+    expect(idProperty.isArray).toBe(false);
+    expect(idProperty.isRequired).toBe(true);
+    expect(idProperty.stringRepresentation).toBe("number");
+    expect(idProperty.type).toBe(ValueType.NUMBER);
+
+    const descriptionsProperty = wfResponseKeyValueMap.get("descriptions");
+    expect(descriptionsProperty).toBeDefined();
+    expect(descriptionsProperty.isArray).toBe(true);
+    expect(descriptionsProperty.isRequired).toBe(true);
+    expect(descriptionsProperty.stringRepresentation).toBe(
+      "WorkflowDescriptionResponse"
+    );
+    expect(descriptionsProperty.type).toBe(ValueType.OBJECT);
+  });
+
+  it("should parse second interfaces of multiple interfaces", () => {
+    const result = parserInstance.processFile(
+      path.join(__dirname, "fixture", "f003-multiple-interfaces.txt")
+    );
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(2);
+    expect(result[0].name).toBe("WorkflowResponse");
+    expect(result[1].name).toBe("SecondInterface");
+
+    // second interface
+    const secondInterfaceKeyValueMap = result[1].keyValueMap;
+    expect(secondInterfaceKeyValueMap.size).toBe(2);
+
+    const refOtherInterfaceProperty =
+      secondInterfaceKeyValueMap.get("refOtherInterface");
+    expect(refOtherInterfaceProperty).toBeDefined();
+    expect(refOtherInterfaceProperty.isArray).toBe(false);
+    expect(refOtherInterfaceProperty.isRequired).toBe(true);
+    expect(refOtherInterfaceProperty.stringRepresentation).toBe(
+      "WorkflowResponse"
+    );
+    expect(refOtherInterfaceProperty.type).toBe(ValueType.OBJECT);
+
+    const otherDescriptionsProperty =
+      secondInterfaceKeyValueMap.get("otherDescriptions");
+    expect(otherDescriptionsProperty).toBeDefined();
+    expect(otherDescriptionsProperty.isArray).toBe(true);
+    expect(otherDescriptionsProperty.isRequired).toBe(true);
+    expect(otherDescriptionsProperty.stringRepresentation).toBe(
+      "WorkflowDescriptionResponse"
+    );
+    expect(otherDescriptionsProperty.type).toBe(ValueType.OBJECT);
   });
 });
