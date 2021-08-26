@@ -44,6 +44,13 @@ export class YamlUpdater {
 
   private getYamlMapAndAssert(currentMap: YAMLMap, keyForAnotherMap: string) {
     const next = currentMap.get(keyForAnotherMap);
+    if (next === undefined) {
+      console.log(`${keyForAnotherMap} not found. Creating YAMLMap Node.`);
+      const innerMap = new YAMLMap();
+      currentMap.set(keyForAnotherMap, innerMap);
+
+      return innerMap;
+    }
 
     if (next instanceof YAMLMap) {
       return next;
