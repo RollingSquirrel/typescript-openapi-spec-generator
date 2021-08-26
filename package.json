@@ -14,7 +14,9 @@
   },
   "author": "RollingSquirrel",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "ts-morph": "^11.0.3"
+  },
   "devDependencies": {
     "typescript": "^4.3.5",
     "@types/node": "^16.7.1"

@@ -1,10 +1,9 @@
 import fs from "fs";
 import path from "path";
 import { cwd } from "process";
+import { AstParser } from "./support/ast-parser";
 import { convertToOpenAPISchema } from "./support/openapi-conversion";
 import { writeSchemas } from "./support/output-writer";
-import { convertToSchema } from "./support/schema-conversion";
-import { removeIrrelevantTextAndSplit } from "./support/text-sanitizing";
 
 interface Config {
   /**
@@ -56,22 +55,21 @@ function main(config: Config) {
    * Maps the filename to their converted YAML representation
    */
   const convertedYamlStringsMap = new Map<string, string>();
+  const astParser = new AstParser();
 
   for (const fileToParse of parseDir) {
-    const fileContent = fs.readFileSync(
-      path.join(cwd(), config.inputDir, fileToParse)
-    );
+    const filePath = path.join(cwd(), config.inputDir, fileToParse);
+    const parsedSchemas = astParser.processFile(filePath);
 
-    let fileTextContent = fileContent.toString();
+    for (let i = 0; i < parsedSchemas.length; i++) {
+      const schema = parsedSchemas[i];
 
-    const relevantWordsSanitized =
-      removeIrrelevantTextAndSplit(fileTextContent);
-
-    console.log(`Parsing and converting to schema - ${fileToParse}`);
-    const schema = convertToSchema(relevantWordsSanitized);
-
-    console.log("Converting parsed schema to OpenAPI Spec");
-    convertedYamlStringsMap.set(fileToParse, convertToOpenAPISchema(schema));
+      console.log("Converting parsed schema to OpenAPI Spec");
+      convertedYamlStringsMap.set(
+        `${fileToParse.replace(".ts", "")}-${i}`,
+        convertToOpenAPISchema(schema)
+      );
+    }
   }
 
   const outputDirPath = path.join(cwd(), config.outDir);
