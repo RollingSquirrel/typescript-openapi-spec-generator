@@ -8,7 +8,7 @@ This is a very simple implementation based on my personal requirements:
 - No special documentation requirements (There are advanced libraries out there to generate documentation based on the source code jsDoc which may be harder to maintain in a small and quickly changing project)
 - Specifying required and none required properties to simplify frontend development
 
-Special use cases like annotations on properties or multiple types are not supported and will most likely result in an error.
+The implementations relies on [ts-morph](https://github.com/dsherret/ts-morph) an abstraction of the TypeScript compiler API to parse the AST.
 
 Feel free to fork and expand this project to tailor it to your needs.
 
