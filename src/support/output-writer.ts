@@ -1,5 +1,18 @@
 import fs from "fs";
 import path from "path";
+import * as yaml from "yaml";
+
+export function writeYamlFile(
+  updatedYamlDocument: yaml.Document.Parsed,
+  pathToOutputDir: string
+) {
+  mkdirIfNotExists(pathToOutputDir);
+
+  fs.writeFileSync(
+    path.join(pathToOutputDir, "output.yaml"),
+    yaml.stringify(updatedYamlDocument)
+  );
+}
 
 export function writeSchemas(
   fileToYamlMap: Map<string, string>,
