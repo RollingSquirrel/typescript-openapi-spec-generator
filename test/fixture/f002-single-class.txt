@@ -1,0 +1,14 @@
+import { WorkflowDescriptionResponse } from "./workflow-description-response";
+
+export class WorkflowResponse extends AnotherInterface {
+  /**
+   * Some comment will be ignored.
+   */
+  id: number;
+  name: string;
+
+  // Note: Optional -> not in required property list
+  // (other format importPath: string | undefined not supported)
+  importPath?: string;
+  descriptions: WorkflowDescriptionResponse[];
+};
