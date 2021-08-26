@@ -17,9 +17,14 @@ Feel free to fork and expand this project to tailor it to your needs.
 Model:
 
 ```typescript
+// Import is not required to be resolved unless needed for extends/implements
 import { WorkflowDescriptionResponse } from "./workflow-description-response";
 
-export interface WorkflowResponse extends AnotherInterface {
+export interface DefaultResponse {
+  defaultResponseValue: string;
+}
+
+export interface WorkflowResponse extends DefaultResponse {
   /**
    * Some comment will be ignored.
    */
@@ -36,13 +41,23 @@ export interface WorkflowResponse extends AnotherInterface {
 Results in the following YAML:
 
 ```yaml
+DefaultResponse:
+  type: object
+  required:
+    - defaultResponseValue
+  properties:
+    defaultResponseValue:
+      type: string
 WorkflowResponse:
   type: object
   required:
+    - defaultResponseValue
     - id
     - name
     - descriptions
   properties:
+    defaultResponseValue:
+      type: string
     id:
       type: number
     name:
