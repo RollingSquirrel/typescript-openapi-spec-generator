@@ -4,6 +4,7 @@ const defaultConfig: Config = {
   outDir: "./parsed",
   inputDir: "./parse",
   writeSingleFile: false,
+  existingOpenApiSpecPath: undefined,
 };
 
 // parse command line parameters to overwrite defaults
@@ -17,11 +18,12 @@ for (let i = 2; i < process.argv.length; i++) {
     defaultConfig.inputDir = argument.replace("--input=", "");
   } else if (argument.includes("--output")) {
     defaultConfig.outDir = argument.replace("--output=", "");
+  } else if (argument.includes("--apispec=")) {
+    defaultConfig.existingOpenApiSpecPath = argument.replace("--apispec=", "");
   } else {
     console.log("Found unknown argument. Skipping: ", argument);
   }
 }
 
-const app = new App();
-
-app.start(defaultConfig);
+const app = new App(defaultConfig);
+app.start();

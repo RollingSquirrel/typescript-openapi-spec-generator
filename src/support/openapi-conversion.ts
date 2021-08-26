@@ -4,13 +4,26 @@ import { ValueType } from "../model/value-type";
 const IDENT = "  ";
 
 export function convertToOpenAPISchema(parsedSchema: ParsedSchema) {
-  const stringRepresentation = [
-    `${parsedSchema.name}:`,
-    `${ident(1)}type: object`,
-    ...createRequiredPropertiesStrings(parsedSchema, 1),
-    `${ident(1)}properties:`,
-    ...createPropertiesStrings(parsedSchema, 2),
-  ].join("\n") + '\n';
+  const stringRepresentation =
+    [
+      `${parsedSchema.name}:`,
+      `${ident(1)}type: object`,
+      ...createRequiredPropertiesStrings(parsedSchema, 1),
+      `${ident(1)}properties:`,
+      ...createPropertiesStrings(parsedSchema, 2),
+    ].join("\n") + "\n";
+
+  return stringRepresentation;
+}
+
+export function convertToOpenAPISchemaContent(parsedSchema: ParsedSchema) {
+  const stringRepresentation =
+    [
+      `${ident(0)}type: object`,
+      ...createRequiredPropertiesStrings(parsedSchema, 0),
+      `${ident(0)}properties:`,
+      ...createPropertiesStrings(parsedSchema, 1),
+    ].join("\n") + "\n";
 
   return stringRepresentation;
 }

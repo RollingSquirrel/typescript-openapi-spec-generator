@@ -9,15 +9,15 @@ describe("AST Parser tests", () => {
 
   beforeEach(() => {
     const fixturePaths = fs
-      .readdirSync(path.join(__dirname, "fixture"))
-      .map((file) => path.join(__dirname, "fixture", file));
+      .readdirSync(path.join(__dirname, "fixture", "tsparse"))
+      .map((file) => path.join(__dirname, "fixture", "tsparse", file));
 
     parserInstance = new AstParser(fixturePaths);
   });
 
   it("should parse interface", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f001-single-interface.txt")
+      path.join(__dirname, "fixture", "tsparse", "f001-single-interface.txt")
     );
 
     expect(result).toBeDefined();
@@ -60,7 +60,7 @@ describe("AST Parser tests", () => {
 
   it("should parse class", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f002-single-class.txt")
+      path.join(__dirname, "fixture", "tsparse", "f002-single-class.txt")
     );
 
     expect(result).toBeDefined();
@@ -103,7 +103,7 @@ describe("AST Parser tests", () => {
 
   it("should parse first interface of multiple interfaces", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f003-multiple-interfaces.txt")
+      path.join(__dirname, "fixture", "tsparse", "f003-multiple-interfaces.txt")
     );
 
     expect(result).toBeDefined();
@@ -134,7 +134,7 @@ describe("AST Parser tests", () => {
 
   it("should parse second interfaces of multiple interfaces", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f003-multiple-interfaces.txt")
+      path.join(__dirname, "fixture", "tsparse", "f003-multiple-interfaces.txt")
     );
 
     expect(result).toBeDefined();
@@ -169,7 +169,12 @@ describe("AST Parser tests", () => {
 
   it("should parse interface with heritage clause and definition in same file", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f004-resolve-heritage-interface.ts")
+      path.join(
+        __dirname,
+        "fixture",
+        "tsparse",
+        "f004-resolve-heritage-interface.ts"
+      )
     );
 
     expect(result).toBeDefined();
@@ -196,7 +201,7 @@ describe("AST Parser tests", () => {
 
   it("should parse interface with heritage clause and definition in different file", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f005-2-extend-interface.ts")
+      path.join(__dirname, "fixture", "tsparse", "f005-2-extend-interface.ts")
     );
 
     expect(result).toBeDefined();
@@ -220,9 +225,9 @@ describe("AST Parser tests", () => {
     expect(extendProperty.type).toBe(ValueType.STRING);
   });
 
-  it('should parse class with heritage clause and definition in different file', () => {
+  it("should parse class with heritage clause and definition in different file", () => {
     const result = parserInstance.processFile(
-      path.join(__dirname, "fixture", "f006-2-extend-class.ts")
+      path.join(__dirname, "fixture", "tsparse", "f006-2-extend-class.ts")
     );
 
     expect(result).toBeDefined();

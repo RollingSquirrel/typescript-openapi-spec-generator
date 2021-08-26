@@ -2,13 +2,18 @@
 
 This simple NodeJS application can be used to convert TypeScript models to their corresponding OpenAPI specification (v3). [Further Reading](https://swagger.io/docs/specification/about/)
 
+Features:
+
+- Generate OpenAPI specification based on your models (classes or interfaces)
+- Update schemas within your existing OpenAPI specification without manually inserting them
+
 This is a very simple implementation based on my personal requirements:
 
 - Quick conversion of a large number of entities to their schema
 - No special documentation requirements (There are advanced libraries out there to generate documentation based on the source code jsDoc which may be harder to maintain in a small and quickly changing project)
 - Specifying required and none required properties to simplify frontend development
 
-The implementations relies on [ts-morph](https://github.com/dsherret/ts-morph) an abstraction of the TypeScript compiler API to parse the AST.
+The implementation relies on [ts-morph](https://github.com/dsherret/ts-morph) an abstraction of the TypeScript compiler API to parse the AST.
 
 Feel free to fork and expand this project to tailor it to your needs.
 
@@ -102,6 +107,25 @@ node ./dist/index.js --option=value
 The application accepts some simple command line options in the format `--option=value`.
 Note that the scripts inside `package.json` require a special format to pass options to node.
 See the `start:s` script for an example.
+
+Example usage with Node:
+
+```
+npm run start:s -- --apispec="your-api-spec.yaml"
+```
+
+This runs the script `start:s` (see package.json) and passes on the parameter `--apispec="your-api-spec.yaml"`
+to the application.
+
+### Update existing OpenAPI Specification
+
+```
+--apispec="your-api-spec.yaml"
+```
+
+Specify a relative path to your current OpenAPI specification.
+
+Adding this option will parse your existing OpenAPI specification and update the component/schemas with the new definitions. The default behavior is not modify / remove any existing schemas unless their key is part of the parsed input files.
 
 ### Single file output
 
