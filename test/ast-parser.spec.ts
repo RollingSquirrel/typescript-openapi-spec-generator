@@ -2,12 +2,17 @@ import path from "path";
 import { ValueType } from "../src/model/value-type";
 import "../src/support/ast-parser";
 import { AstParser } from "../src/support/ast-parser";
+import fs from "fs";
 
 describe("AST Parser tests", () => {
   let parserInstance: AstParser;
 
   beforeEach(() => {
-    parserInstance = new AstParser();
+    const fixturePaths = fs
+      .readdirSync(path.join(__dirname, "fixture"))
+      .map((file) => path.join(__dirname, "fixture", file));
+
+    parserInstance = new AstParser(fixturePaths);
   });
 
   it("should parse interface", () => {
@@ -160,5 +165,84 @@ describe("AST Parser tests", () => {
       "WorkflowDescriptionResponse"
     );
     expect(otherDescriptionsProperty.type).toBe(ValueType.OBJECT);
+  });
+
+  it("should parse interface with heritage clause and definition in same file", () => {
+    const result = parserInstance.processFile(
+      path.join(__dirname, "fixture", "f004-resolve-heritage-interface.ts")
+    );
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(2);
+    expect(result[0].name).toBe("FirstInterface");
+    expect(result[1].name).toBe("SecondInterface");
+
+    const secondKeyValueMap = result[1].keyValueMap;
+
+    const idProperty = secondKeyValueMap.get("id");
+    expect(idProperty).toBeDefined();
+    expect(idProperty.isArray).toBe(false);
+    expect(idProperty.isRequired).toBe(false);
+    expect(idProperty.stringRepresentation).toBe("number");
+    expect(idProperty.type).toBe(ValueType.NUMBER);
+
+    const secondProperty = secondKeyValueMap.get("secondProperty");
+    expect(secondProperty).toBeDefined();
+    expect(secondProperty.isArray).toBe(false);
+    expect(secondProperty.isRequired).toBe(true);
+    expect(secondProperty.stringRepresentation).toBe("string");
+    expect(secondProperty.type).toBe(ValueType.STRING);
+  });
+
+  it("should parse interface with heritage clause and definition in different file", () => {
+    const result = parserInstance.processFile(
+      path.join(__dirname, "fixture", "f005-2-extend-interface.ts")
+    );
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe("ExtendInterface");
+
+    const keyValueMap = result[0].keyValueMap;
+
+    const baseProperty = keyValueMap.get("base");
+    expect(baseProperty).toBeDefined();
+    expect(baseProperty.isArray).toBe(false);
+    expect(baseProperty.isRequired).toBe(true);
+    expect(baseProperty.stringRepresentation).toBe("FirstInterface");
+    expect(baseProperty.type).toBe(ValueType.OBJECT);
+
+    const extendProperty = keyValueMap.get("extendProperty");
+    expect(extendProperty).toBeDefined();
+    expect(extendProperty.isArray).toBe(true);
+    expect(extendProperty.isRequired).toBe(true);
+    expect(extendProperty.stringRepresentation).toBe("string");
+    expect(extendProperty.type).toBe(ValueType.STRING);
+  });
+
+  it('should parse class with heritage clause and definition in different file', () => {
+    const result = parserInstance.processFile(
+      path.join(__dirname, "fixture", "f006-2-extend-class.ts")
+    );
+
+    expect(result).toBeDefined();
+    expect(result).toHaveLength(1);
+    expect(result[0].name).toBe("ExtendClass");
+
+    const keyValueMap = result[0].keyValueMap;
+
+    const baseProperty = keyValueMap.get("baseProperty");
+    expect(baseProperty).toBeDefined();
+    expect(baseProperty.isArray).toBe(false);
+    expect(baseProperty.isRequired).toBe(true);
+    expect(baseProperty.stringRepresentation).toBe("string");
+    expect(baseProperty.type).toBe(ValueType.STRING);
+
+    const extendProperty = keyValueMap.get("extendProperty");
+    expect(extendProperty).toBeDefined();
+    expect(extendProperty.isArray).toBe(false);
+    expect(extendProperty.isRequired).toBe(false);
+    expect(extendProperty.stringRepresentation).toBe("number");
+    expect(extendProperty.type).toBe(ValueType.NUMBER);
   });
 });
