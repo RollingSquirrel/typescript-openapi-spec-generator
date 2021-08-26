@@ -20,7 +20,7 @@ export function writeSchemas(
     fs.writeFileSync(completeOutputPath, concatOutputString);
   } else {
     fileToYamlMap.forEach((schemaString, inputFileName) => {
-      const outputFileName = inputFileName.replace(".ts", ".yaml");
+      const outputFileName = `${inputFileName}.yaml`;
 
       const completeOutputPath = path.join(pathToOutputDir, outputFileName);
 

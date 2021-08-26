@@ -57,7 +57,7 @@ function bumpMinorVersion() {
   logStandard("Bump minor version.");
   currentVersion.minor++;
 
-  overwritePackageJson(`${currentVersion.major}.${currentVersion.minor}.${currentVersion.patch}`);
+  overwritePackageJson(`${currentVersion.major}.${currentVersion.minor}.0`);
   runInstall();
 }
 
@@ -67,7 +67,7 @@ function bumpMajorVersion() {
   logStandard("Bump major version.");
   currentVersion.major++;
 
-  overwritePackageJson(`${currentVersion.major}.${currentVersion.minor}.${currentVersion.patch}`);
+  overwritePackageJson(`${currentVersion.major}.0.0`);
   runInstall();
 }
 
