@@ -4,6 +4,7 @@ import {
   Project,
   PropertyDeclaration,
   PropertySignature,
+  SourceFile,
   SyntaxKind,
   ts,
   Type,
@@ -13,11 +14,26 @@ import { ParsedSchemaValue } from "../model/parsed-schema-value";
 import { ValueType } from "../model/value-type";
 
 export class AstParser {
-  constructor() {}
+  private filePathSourceMap: Map<string, SourceFile>;
+
+  constructor(filePaths: string[]) {
+    const astProject = new Project({});
+    this.filePathSourceMap = new Map();
+
+    for (const filePath of filePaths) {
+      const sourceFile = astProject.addSourceFileAtPath(filePath);
+
+      this.filePathSourceMap.set(filePath, sourceFile);
+    }
+  }
 
   processFile(filePath: string) {
-    const astProject = new Project({});
-    const sourceFile = astProject.addSourceFileAtPath(filePath);
+    const sourceFile = this.filePathSourceMap.get(filePath);
+
+    if(sourceFile === undefined) {
+      console.log(`${filePath} not loaded.`);
+      throw new Error("Source file to process has not been loaded.");
+    }
 
     const classes = sourceFile.getClasses();
     const interfaces = sourceFile.getInterfaces();

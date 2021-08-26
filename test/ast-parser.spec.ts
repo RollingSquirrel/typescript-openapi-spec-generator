@@ -2,12 +2,17 @@ import path from "path";
 import { ValueType } from "../src/model/value-type";
 import "../src/support/ast-parser";
 import { AstParser } from "../src/support/ast-parser";
+import fs from "fs";
 
 describe("AST Parser tests", () => {
   let parserInstance: AstParser;
 
   beforeEach(() => {
-    parserInstance = new AstParser();
+    const fixturePaths = fs
+      .readdirSync(path.join(__dirname, "fixture"))
+      .map((file) => path.join(__dirname, "fixture", file));
+
+    parserInstance = new AstParser(fixturePaths);
   });
 
   it("should parse interface", () => {
