@@ -13,7 +13,7 @@ describe("YAML Manager tests", () => {
   beforeEach(() => {
     manager = new YamlUpdater(
       path.join(__dirname, "fixture", "yaml", "f001-existing.yaml"),
-      new OpenApiConverter()
+      new OpenApiConverter(true)
     );
   });
 
@@ -41,6 +41,50 @@ describe("YAML Manager tests", () => {
           "fixture",
           "yaml",
           "f002-expected-update-existing.yaml"
+        )
+      )
+      .toString();
+
+    expect(yaml.stringify(yaml.parse(expectedStringContent))).toBe(
+      yaml.stringify(updatedDocument)
+    );
+  });
+
+  it('should update existing and sort', () => {
+    manager = new YamlUpdater(
+      path.join(__dirname, "fixture", "yaml", "f003-existing-not-sorted.yaml"),
+      new OpenApiConverter(true)
+    );
+
+    const parsed: ParsedSchema[] = [
+      {
+        name: "ParameterCreationRequest",
+        keyValueMap: new Map(),
+      },
+    ];
+
+    parsed[0].keyValueMap.set("parameterValue", {
+      isArray: false,
+      isRequired: true,
+      stringRepresentation: "string",
+      type: ValueType.STRING,
+    });
+    parsed[0].keyValueMap.set("abc", {
+      isArray: false,
+      isRequired: true,
+      stringRepresentation: "string",
+      type: ValueType.STRING,
+    });
+
+    const updatedDocument = manager.updateDefinitions(parsed);
+
+    const expectedStringContent = fs
+      .readFileSync(
+        path.join(
+          __dirname,
+          "fixture",
+          "yaml",
+          "f003-expected-update-sorted.yaml"
         )
       )
       .toString();
