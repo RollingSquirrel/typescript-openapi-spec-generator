@@ -58,22 +58,22 @@ WorkflowResponse:
   type: object
   required:
     - defaultResponseValue
+    - descriptions
     - id
     - name
-    - descriptions
   properties:
     defaultResponseValue:
-      type: string
-    id:
-      type: number
-    name:
-      type: string
-    importPath:
       type: string
     descriptions:
       type: array
       items:
         $ref: "#/components/schemas/WorkflowDescriptionResponse"
+    id:
+      type: number
+    importPath:
+      type: string
+    name:
+      type: string
 ```
 
 ## Setup
