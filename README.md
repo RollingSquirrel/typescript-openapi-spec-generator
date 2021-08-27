@@ -6,6 +6,7 @@ Features:
 
 - Generate OpenAPI specification based on your models (classes or interfaces)
 - Update schemas within your existing OpenAPI specification without manually inserting them
+- Sort properties (required list and properties themselves)
 
 This is a very simple implementation based on my personal requirements:
 
