@@ -4,3 +4,4 @@ parse/
 parsed/
 
 *api-spec.yaml
+*api-v*.yaml

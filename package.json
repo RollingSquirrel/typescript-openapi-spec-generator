@@ -1,6 +1,6 @@
 {
   "name": "typescript-openapi-spec-generator",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "OpenAPI Spec generator parsing TypeScript files",
   "main": "/dist/index.js",
   "scripts": {

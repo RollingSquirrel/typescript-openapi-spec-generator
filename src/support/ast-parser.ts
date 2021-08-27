@@ -8,7 +8,6 @@ import {
   SourceFile,
   SyntaxKind,
   ts,
-  Type,
 } from "ts-morph";
 import { ParsedSchema } from "../model/parsed-schema";
 import { ParsedSchemaValue } from "../model/parsed-schema-value";

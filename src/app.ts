@@ -3,14 +3,18 @@ import path from "path";
 import { cwd } from "process";
 import { ParsedSchema } from "./model/parsed-schema";
 import { AstParser } from "./support/ast-parser";
-import { convertToOpenAPISchema } from "./support/openapi-conversion";
-import { writeSchemas, writeYamlFile } from "./support/output-writer";
+import { OpenApiConverter } from "./support/openapi-converter";
+import { OutputWriter } from "./support/output-writer";
 import { YamlUpdater } from "./support/yaml-updater";
 export class App {
   private config: Config;
+  private openApiConverter: OpenApiConverter;
+  private outputWriter: OutputWriter;
 
   constructor(config: Config) {
     this.config = config;
+    this.openApiConverter = new OpenApiConverter(config.sortProperties);
+    this.outputWriter = new OutputWriter();
   }
 
   start() {
@@ -44,7 +48,7 @@ export class App {
         );
         convertedYamlStringsMap.set(
           `${fileToParse.replace(".ts", "")}-${i}`,
-          convertToOpenAPISchema(schema)
+          this.openApiConverter.convertToOpenAPISchema(schema)
         );
       }
     }
@@ -55,7 +59,7 @@ export class App {
 
     const outputDirPath = path.join(cwd(), this.config.outDir);
 
-    writeSchemas(
+    this.outputWriter.writeSchemas(
       convertedYamlStringsMap,
       outputDirPath,
       this.config.writeSingleFile
@@ -68,14 +72,15 @@ export class App {
     }
 
     const yamlManager = new YamlUpdater(
-      path.join(cwd(), this.config.existingOpenApiSpecPath)
+      path.join(cwd(), this.config.existingOpenApiSpecPath),
+      this.openApiConverter
     );
 
     const parsedUpdatedDocument =
       yamlManager.updateDefinitions(allParsedSchemas);
     const outputDirPath = path.join(cwd(), this.config.outDir);
 
-    writeYamlFile(
+    this.outputWriter.writeYamlFile(
       parsedUpdatedDocument,
       outputDirPath,
       this.config.existingOpenApiSpecPath

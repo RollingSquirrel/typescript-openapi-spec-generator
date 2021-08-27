@@ -6,6 +6,7 @@ Features:
 
 - Generate OpenAPI specification based on your models (classes or interfaces)
 - Update schemas within your existing OpenAPI specification without manually inserting them
+- Sort properties (required list and properties themselves)
 
 This is a very simple implementation based on my personal requirements:
 
@@ -123,15 +124,30 @@ to the application.
 --apispec="your-api-spec.yaml"
 ```
 
+Default: undefined
+
 Specify a relative path to your current OpenAPI specification.
 
 Adding this option will parse your existing OpenAPI specification and update the component/schemas with the new definitions. The default behavior is not modify / remove any existing schemas unless their key is part of the parsed input files.
+
+### Sort properties
+
+```
+--sort=false
+```
+
+Default: true
+
+If this option is true, sort the properties alphabetically.
+This includes the required properties list and the properties themselves.
 
 ### Single file output
 
 ```
 --wsf=true
 ```
+
+Default: false
 
 Specify this option to store all outputs in a single file (sorted alphabetically based on the input file names).
 The shortcut script `npm run start:s` can be used to store all results in a single file as well.
@@ -142,6 +158,8 @@ The shortcut script `npm run start:s` can be used to store all results in a sing
 --input=exampledir/files
 ```
 
+Default: "./parse"
+
 Specify a relative path to the input directory.
 
 ### Specify output directory path
@@ -149,6 +167,8 @@ Specify a relative path to the input directory.
 ```
 --output=exampledir/deeper
 ```
+
+Default: "./parsed"
 
 Specify a relative path to the output directory.
 If the directory does not exist it will be created automatically.
