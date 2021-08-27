@@ -8,9 +8,13 @@ import { OutputWriter } from "./support/output-writer";
 import { YamlUpdater } from "./support/yaml-updater";
 export class App {
   private config: Config;
+  private openApiConverter: OpenApiConverter;
+  private outputWriter: OutputWriter;
 
   constructor(config: Config) {
     this.config = config;
+    this.openApiConverter = new OpenApiConverter();
+    this.outputWriter = new OutputWriter();
   }
 
   start() {
@@ -31,9 +35,6 @@ export class App {
     );
     const allParsedSchemas: ParsedSchema[] = [];
 
-    const openApiConverter = new OpenApiConverter();
-    const outputWriter = new OutputWriter();
-
     for (const fileToParse of parseDir) {
       const filePath = path.join(cwd(), this.config.inputDir, fileToParse);
       const parsedSchemas = astParser.processFile(filePath);
@@ -47,43 +48,39 @@ export class App {
         );
         convertedYamlStringsMap.set(
           `${fileToParse.replace(".ts", "")}-${i}`,
-          openApiConverter.convertToOpenAPISchema(schema)
+          this.openApiConverter.convertToOpenAPISchema(schema)
         );
       }
     }
 
     if (this.config.existingOpenApiSpecPath !== undefined) {
-      this.writeFullApiSpec(allParsedSchemas, openApiConverter, outputWriter);
+      this.writeFullApiSpec(allParsedSchemas);
     }
 
     const outputDirPath = path.join(cwd(), this.config.outDir);
 
-    outputWriter.writeSchemas(
+    this.outputWriter.writeSchemas(
       convertedYamlStringsMap,
       outputDirPath,
       this.config.writeSingleFile
     );
   }
 
-  private writeFullApiSpec(
-    allParsedSchemas: ParsedSchema[],
-    openApiConverter: OpenApiConverter,
-    outputWriter: OutputWriter
-  ) {
+  private writeFullApiSpec(allParsedSchemas: ParsedSchema[]) {
     if (this.config.existingOpenApiSpecPath === undefined) {
       throw new Error("Illegal argument. Existing API Spec must be defined.");
     }
 
     const yamlManager = new YamlUpdater(
       path.join(cwd(), this.config.existingOpenApiSpecPath),
-      openApiConverter
+      this.openApiConverter
     );
 
     const parsedUpdatedDocument =
       yamlManager.updateDefinitions(allParsedSchemas);
     const outputDirPath = path.join(cwd(), this.config.outDir);
 
-    outputWriter.writeYamlFile(
+    this.outputWriter.writeYamlFile(
       parsedUpdatedDocument,
       outputDirPath,
       this.config.existingOpenApiSpecPath
