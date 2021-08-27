@@ -13,7 +13,7 @@ export class App {
 
   constructor(config: Config) {
     this.config = config;
-    this.openApiConverter = new OpenApiConverter();
+    this.openApiConverter = new OpenApiConverter(config.sortProperties);
     this.outputWriter = new OutputWriter();
   }
 

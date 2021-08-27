@@ -3,9 +3,11 @@ import { ValueType } from "../model/value-type";
 
 export class OpenApiConverter {
   private currentIndentation;
+  private isPropertySortingEnabled: boolean;
 
-  constructor() {
+  constructor(sortProperties: boolean) {
     this.currentIndentation = "  ";
+    this.isPropertySortingEnabled = sortProperties;
   }
 
   convertToOpenAPISchema(parsedSchema: ParsedSchema) {
@@ -38,9 +40,21 @@ export class OpenApiConverter {
     identFac: number
   ): string[] {
     const propertiesStrings: string[] = [];
+    const keys = Array.from(parsedSchema.keyValueMap.keys());
 
-    parsedSchema.keyValueMap.forEach((value, key) => {
+    if (this.isPropertySortingEnabled) {
+      keys.sort();
+    }
+
+    for (const key of keys) {
       propertiesStrings.push(`${this.ident(identFac)}${key}:`);
+
+      const value = parsedSchema.keyValueMap.get(key);
+
+      if (value === undefined) {
+        console.log(key, keys);
+        throw new Error("Value to given key undefined.");
+      }
 
       if (value.isArray) {
         propertiesStrings.push(`${this.ident(identFac + 1)}type: array`);
@@ -74,7 +88,7 @@ export class OpenApiConverter {
           );
         }
       }
-    });
+    }
 
     return propertiesStrings;
   }
@@ -83,9 +97,7 @@ export class OpenApiConverter {
     parsedSchema: ParsedSchema,
     identFac: number
   ): string[] {
-    let requiredPropertiesStrings: string[] = [
-      `${this.ident(identFac)}required:`,
-    ];
+    let requiredPropertiesStrings: string[] = [];
 
     parsedSchema.keyValueMap.forEach((value, key) => {
       if (value.isRequired) {
@@ -93,9 +105,16 @@ export class OpenApiConverter {
       }
     });
 
-    return requiredPropertiesStrings.length === 1
-      ? []
-      : requiredPropertiesStrings;
+    if (this.isPropertySortingEnabled) {
+      requiredPropertiesStrings.sort();
+    }
+
+    const outputPropertyStrings = [
+      `${this.ident(identFac)}required:`,
+      ...requiredPropertiesStrings,
+    ];
+
+    return outputPropertyStrings.length === 1 ? [] : outputPropertyStrings;
   }
 
   private ident(factor: number) {

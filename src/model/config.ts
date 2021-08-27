@@ -13,9 +13,13 @@ interface Config {
   writeSingleFile: boolean;
   /**
    * Path to existing OpenAPI spec file.
-   * 
+   *
    * This option allows for automatically overwriting existing specifications
    * instead of manually updating them.
    */
-  existingOpenApiSpecPath?: string
+  existingOpenApiSpecPath?: string;
+  /**
+   * If enabled the properties in the list of required properties and the properties themselves are sorted alphabetically.
+   */
+  sortProperties: boolean;
 }
