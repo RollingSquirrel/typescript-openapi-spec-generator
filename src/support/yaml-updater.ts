@@ -2,13 +2,15 @@ import fs from "fs";
 import * as yaml from "yaml";
 import { YAMLMap } from "yaml/types";
 import { ParsedSchema } from "../model/parsed-schema";
-import { convertToOpenAPISchemaContent } from "./openapi-conversion";
+import { OpenApiConverter } from "./openapi-converter";
 
 export class YamlUpdater {
   private existingFilePath: string;
+  private openApiConverter: OpenApiConverter;
 
-  constructor(existingFilePath: string) {
+  constructor(existingFilePath: string, openApiConverter: OpenApiConverter) {
     this.existingFilePath = existingFilePath;
+    this.openApiConverter = openApiConverter;
   }
 
   /**
@@ -39,7 +41,12 @@ export class YamlUpdater {
   private overwriteKeyInMap(yamlMap: YAMLMap, parsedSchema: ParsedSchema) {
     const key = parsedSchema.name;
 
-    yamlMap.set(key, yaml.parse(convertToOpenAPISchemaContent(parsedSchema)));
+    yamlMap.set(
+      key,
+      yaml.parse(
+        this.openApiConverter.convertToOpenAPISchemaContent(parsedSchema)
+      )
+    );
   }
 
   private getYamlMapAndAssert(currentMap: YAMLMap, keyForAnotherMap: string) {

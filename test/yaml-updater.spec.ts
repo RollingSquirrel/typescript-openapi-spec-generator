@@ -5,13 +5,15 @@ import { YamlUpdater } from "../src/support/yaml-updater";
 import { YAMLMap } from "yaml/types";
 import { ParsedSchema } from "../src/model/parsed-schema";
 import { ValueType } from "../src/model/value-type";
+import { OpenApiConverter } from "../src/support/openapi-converter";
 
 describe("YAML Manager tests", () => {
   let manager: YamlUpdater;
 
   beforeEach(() => {
     manager = new YamlUpdater(
-      path.join(__dirname, "fixture", "yaml", "f001-existing.yaml")
+      path.join(__dirname, "fixture", "yaml", "f001-existing.yaml"),
+      new OpenApiConverter()
     );
   });
 
